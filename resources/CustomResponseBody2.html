@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied | Web Application Firewall</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 700px;
+            width: 100%;
+            animation: fadeIn 1.5s ease;
+        }
+        h1 {
+            font-size: 3em;
+            color: #e74c3c;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        .explanation {
+            background-color: #f7f7f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .explanation p {
+            margin: 0;
+        }
+        .ref {
+            margin-top: 20px;
+            font-size: 1em;
+            color: #34495e;
+        }
+        .support {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 28px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+            border-radius: 30px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+        .support:hover {
+            background-color: #2980b9;
+        }
+        footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #95a5a6;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Oops! Access Denied</h1>
+        <p>Your request has been blocked by the Azure Web Application Firewall (WAF).</p>
+        
+        <div class="explanation">
+            <p><strong>What is a Web Application Firewall (WAF)?</strong></p>
+            <p>A WAF is a security feature designed to protect web applications by filtering and monitoring HTTP traffic. It's likely your request matched patterns associated with malicious behavior or unauthorized access attempts.</p>
+        </div>
+        
+        <p><strong>Why did this happen?</strong></p>
+        <p>Possible reasons for this block include:</p>
+        <ul style="text-align: left;">
+            <li>Suspicious activity detected.</li>
+            <li>Unauthorized access attempts.</li>
+            <li>Exceeding the site's security thresholds.</li>
+        </ul>
+        
+        <p>If you believe this is a mistake, please contact our support team with the reference code below.</p>
+        
+        <p class="ref">Reference Code: <strong>{{azure-ref}}</strong></p>
+        
+        <a href="mailto:support@example.com?subject=Azure WAF Block&body=Reference Code: {azure-ref}" class="support">Contact Support</a>
+    </div>
+    
+</body>
+</html>

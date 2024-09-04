@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f2f2;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 36px;
+            color: #d9534f;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .error-code {
+            font-size: 24px;
+            color: #5bc0de;
+            font-weight: bold;
+        }
+        .support {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .contact {
+            color: #337ab7;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .contact:hover {
+            text-decoration: underline;
+        }
+        .icon {
+            font-size: 80px;
+            color: #d9534f;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🚫</div>
+        <h1>Access Denied</h1>
+        <p>It appears that your request has been blocked by our Web Application Firewall.</p>
+        <p class="error-code">Error Code: WAF-403</p>
+        <p>If you believe this is a mistake, please contact our support team.</p>
+        <div class="support">
+            <p>Contact us at: <a href="mailto:support@example.com" class="contact">support@example.com</a></p>
+            <p>or call: <strong>+1 (800) 123-4567</strong></p>
+            <p><strong>{{azure-ref}}</strong></p>
+        </div>
+    </div>
+</body>
+</html>
