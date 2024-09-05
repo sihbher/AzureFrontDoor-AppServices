@@ -78,7 +78,7 @@ az afd endpoint purge --resource-group $rg_name --profile-name $fd_profile_name 
 ####################################################################################################################################
 waf_policy_name="myWAFPolicy$random_string"
 security_policy_name="my-security-policy-$random_string"
-az network front-door waf-policy create --name $waf_policy_name --resource-group $rg_name --sku Premium_AzureFrontDoor --disabled false --mode Prevention --redirect-url "https://docs.microsoft.com/en-us/azure/web-application-firewall" --custom-block-response-body ""
+az network front-door waf-policy create --name $waf_policy_name --resource-group $rg_name --sku Premium_AzureFrontDoor --disabled false --mode Prevention --redirect-url "https://docs.microsoft.com/en-us/azure/web-application-firewall"
 
 echo #Assign managed rules to the WAF policy
 az network front-door waf-policy managed-rules add --policy-name $waf_policy_name --resource-group $rg_name --type Microsoft_DefaultRuleSet --action Block --version 2.1
