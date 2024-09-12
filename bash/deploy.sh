@@ -62,7 +62,7 @@ echo "#Test the Front Door"
 endpoint_domain=$(az afd endpoint show --resource-group $rg_name --profile-name $fd_profile_name --endpoint-name $endpoint_name --query "hostName" -o tsv)
 
 echo "#Purge the endpoint"
-az afd endpoint purge --resource-group $rg_name --profile-name $fd_profile_name --endpoint-name $endpoint_name --domains $endpoint_domain --content-paths '/*'
+#az afd endpoint purge --resource-group $rg_name --profile-name $fd_profile_name --endpoint-name $endpoint_name --domains $endpoint_domain --content-paths '/*'
 
 #Stop the web apps
 # az webapp stop --name $app1_name --resource-group $rg_name
@@ -107,3 +107,20 @@ az network front-door waf-policy rule match-condition add --match-variable Query
 echo "Front Door endpoint: $endpoint_domain"
 echo "Web app 1: $app1_name.azurewebsites.net"
 echo "Web app 2: $app2_name.azurewebsites.net"
+
+#Create a log analytics worspace
+log_analytics_workspace_name="myLogAnalyticsWorkspace$random_string"
+az monitor log-analytics workspace create --resource-group $rg_name --workspace-name $log_analytics_workspace_name --location $region1
+
+
+#Get Log analytics workspace ID
+law_id=$(az monitor log-analytics workspace show --resource-group $rg_name --workspace-name $log_analytics_workspace_name --query id -o tsv)
+front_door_resource_id=$(az afd profile show --resource-group $rg_name --profile-name $fd_profile_name --query "id" -o tsv)
+
+#Working on this
+#Enable diagnostics logs on the Front Door
+az monitor diagnostic-settings create --name "myFrontDoorDiagnosticSettings1" --resource $front_door_resource_id --resource-group $rg_name --workspace $law_id --logs '[{"category": "FrontdoorAccessLog", "enabled": true, "retentionPolicy": {"days": 0, "enabled": true}}, {"category": "FrontdoorWebApplicationFirewallLog", "enabled": true, "retentionPolicy": {"days": 0, "enabled": true}}, {"category": "FrontDoorHealthProbeLog", "enabled": true, "retentionPolicy": {"days": 0, "enabled": true}}]'
+
+#az monitor diagnostic-settings list --resource $front_door_resource_id  -o table
+#az monitor diagnostic-settings categories list --resource $front_door_resource_id
+
