@@ -12,24 +12,25 @@ app1_name=myeshop-$random_string-$region1
 app2_name=myeshop-$random_string-$region2
 endpoint_name=my-eshop-endpoint-$random_string
 echo "Random string: $random_string"
+tags=("delete=yes" "createdBy=Azure CLI (Bash)", "hidden-title=WAF and Azure Front Door PoC")
 
 #Login to Azure
 #az login
 
-az group create --name $rg_name --location $region1 --tags 'delete'='yes'
+az group create --name $rg_name --location $region1 --tags $tags #'delete'='yes'
 
-az appservice plan create --name "appserviceplaneastus2" --resource-group $rg_name --is-linux --location $region1
-az appservice plan create --name "appserviceplanwestus" --resource-group $rg_name --is-linux --location $region2
+az appservice plan create --name "appserviceplaneastus2" --resource-group $rg_name --is-linux --location $region1 --tags $tags
+az appservice plan create --name "appserviceplanwestus" --resource-group $rg_name --is-linux --location $region2 --tags $tags
 
-az webapp create --name $app1_name --resource-group $rg_name --plan appserviceplaneastus2 --runtime NODE:18-lts
-az webapp create --name $app2_name --resource-group $rg_name --plan appserviceplanwestus --runtime NODE:18-lts
+az webapp create --name $app1_name --resource-group $rg_name --plan appserviceplaneastus2 --runtime NODE:18-lts --tags $tags
+az webapp create --name $app2_name --resource-group $rg_name --plan appserviceplanwestus --runtime NODE:18-lts --tags $tags
 
 
 az webapp show --name $app1_name --resource-group $rg_name --query "hostNames"
 az webapp show --name $app2_name --resource-group $rg_name --query "hostNames"
 
 
-az afd profile create --profile-name $fd_profile_name --resource-group $rg_name --sku Premium_AzureFrontDoor
+az afd profile create --profile-name $fd_profile_name --resource-group $rg_name --sku Premium_AzureFrontDoor --tags $tags
 
 #Add an endpoint
 az afd endpoint create --resource-group $rg_name --endpoint-name $endpoint_name --profile-name $fd_profile_name --enabled-state Enabled
@@ -55,8 +56,8 @@ echo "#At this point, you can still access your apps directly using their URLs a
 front_door_id=$(az afd profile show --resource-group "$rg_name" --profile-name "$fd_profile_name" --query "frontDoorId" -o tsv)
 
 echo "#Add the access restrictions to the web apps"
-az webapp config access-restriction add --resource-group $rg_name -n $app1_name --priority 100 --service-tag AzureFrontDoor.Backend --http-header x-azure-fdid=$front_door_id
-az webapp config access-restriction add --resource-group $rg_name -n $app2_name --priority 100 --service-tag AzureFrontDoor.Backend --http-header x-azure-fdid=$front_door_id
+# az webapp config access-restriction add --resource-group $rg_name -n $app1_name --priority 100 --service-tag AzureFrontDoor.Backend --http-header x-azure-fdid=$front_door_id
+# az webapp config access-restriction add --resource-group $rg_name -n $app2_name --priority 100 --service-tag AzureFrontDoor.Backend --http-header x-azure-fdid=$front_door_id
 
 echo "#Test the Front Door"
 endpoint_domain=$(az afd endpoint show --resource-group $rg_name --profile-name $fd_profile_name --endpoint-name $endpoint_name --query "hostName" -o tsv)
@@ -78,7 +79,9 @@ echo "#Purge the endpoint"
 ####################################################################################################################################
 waf_policy_name="myWAFPolicy$random_string"
 security_policy_name="my-security-policy-$random_string"
-az network front-door waf-policy create --name $waf_policy_name --resource-group $rg_name --sku Premium_AzureFrontDoor --disabled false --mode Prevention --redirect-url "https://docs.microsoft.com/en-us/azure/web-application-firewall"
+az network front-door waf-policy create --name $waf_policy_name --resource-group $rg_name --sku Premium_AzureFrontDoor --disabled false --mode Prevention --redirect-url "https://docs.microsoft.com/en-us/azure/web-application-firewall" --tags $tags
+
+
 
 echo "#Assign managed rules to the WAF policy"
 az network front-door waf-policy managed-rules add --policy-name $waf_policy_name --resource-group $rg_name --type Microsoft_DefaultRuleSet --action Block --version 2.1
@@ -103,24 +106,24 @@ echo "#Add a match condition to the rate limiting rule"
 az network front-door waf-policy rule match-condition add --match-variable QueryString --operator Contains --values 'promo' --name $rate_limit_rule_name --policy-name $waf_policy_name --resource-group $rg_name
 
 
-#Test the Front Door
-echo "Front Door endpoint: $endpoint_domain"
-echo "Web app 1: $app1_name.azurewebsites.net"
-echo "Web app 2: $app2_name.azurewebsites.net"
 
-#Create a log analytics worspace
+
+echo "#Create a log analytics workspace"
 log_analytics_workspace_name="myLogAnalyticsWorkspace$random_string"
-az monitor log-analytics workspace create --resource-group $rg_name --workspace-name $log_analytics_workspace_name --location $region1
-
+az monitor log-analytics workspace create --resource-group $rg_name --workspace-name $log_analytics_workspace_name --location $region1 --tags $tags
 
 #Get Log analytics workspace ID
 law_id=$(az monitor log-analytics workspace show --resource-group $rg_name --workspace-name $log_analytics_workspace_name --query id -o tsv)
 front_door_resource_id=$(az afd profile show --resource-group $rg_name --profile-name $fd_profile_name --query "id" -o tsv)
 
-#Working on this
 #Enable diagnostics logs on the Front Door
-az monitor diagnostic-settings create --name "myFrontDoorDiagnosticSettings1" --resource $front_door_resource_id --resource-group $rg_name --workspace $law_id --logs '[{"category": "FrontdoorAccessLog", "enabled": true, "retentionPolicy": {"days": 0, "enabled": true}}, {"category": "FrontdoorWebApplicationFirewallLog", "enabled": true, "retentionPolicy": {"days": 0, "enabled": true}}, {"category": "FrontDoorHealthProbeLog", "enabled": true, "retentionPolicy": {"days": 0, "enabled": true}}]'
+az monitor diagnostic-settings create --name "AzFDDiagnosticSettings" --resource $front_door_resource_id --resource-group $rg_name --workspace $law_id --logs '[{"category": "FrontdoorAccessLog", "enabled": true, "retentionPolicy": {"days": 0, "enabled": true}}, {"category": "FrontdoorWebApplicationFirewallLog", "enabled": true, "retentionPolicy": {"days": 0, "enabled": true}}, {"category": "FrontDoorHealthProbeLog", "enabled": true, "retentionPolicy": {"days": 0, "enabled": true}}]' --metrics '[{"category": "AllMetrics", "enabled": true, "retentionPolicy": {"days": 0, "enabled": true}}]' 
 
 #az monitor diagnostic-settings list --resource $front_door_resource_id  -o table
 #az monitor diagnostic-settings categories list --resource $front_door_resource_id
 
+
+#Test the Front Door
+echo "Front Door endpoint: $endpoint_domain"
+echo "Web app 1: $app1_name.azurewebsites.net"
+echo "Web app 2: $app2_name.azurewebsites.net"

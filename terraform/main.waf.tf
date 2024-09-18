@@ -56,3 +56,6 @@ resource "azurerm_cdn_frontdoor_security_policy" "frontdoor_security_policy" {
     }
   }
 }
+
+
+#https://github.com/Azure/terraform/blob/master/quickstart/101-front-door-premium-storage-blobs-private-link/readme.md
