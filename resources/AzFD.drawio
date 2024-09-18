@@ -71,11 +71,8 @@
         <mxCell id="vapvYva23cW2sGHKlgnp-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.027;entryY=0.522;entryDx=0;entryDy=0;entryPerimeter=0;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;" parent="1" source="vapvYva23cW2sGHKlgnp-15" target="vapvYva23cW2sGHKlgnp-12" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="TQCOW2_wnQN6sET_zCV6-1" value="WAF Policy" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/networking/Web_Application_Firewall_Policies_WAF.svg;" vertex="1" parent="1">
-          <mxGeometry x="219" y="279" width="45" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="TQCOW2_wnQN6sET_zCV6-2" value="WAF Policy" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/networking/Web_Application_Firewall_Policies_WAF.svg;" vertex="1" parent="1">
-          <mxGeometry x="219" y="511" width="45" height="45" as="geometry" />
+        <mxCell id="TQCOW2_wnQN6sET_zCV6-1" value="WAF Policy" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/networking/Web_Application_Firewall_Policies_WAF.svg;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="218" y="305" width="45" height="45" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

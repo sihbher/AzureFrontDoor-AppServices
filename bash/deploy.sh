@@ -12,12 +12,12 @@ app1_name=myeshop-$random_string-$region1
 app2_name=myeshop-$random_string-$region2
 endpoint_name=my-eshop-endpoint-$random_string
 echo "Random string: $random_string"
-tags=("delete=yes" "createdBy=Azure CLI (Bash)", "hidden-title=WAF and Azure Front Door PoC")
+tags=("delete=yes" "createdBy=Azure CLI (Bash)" "hidden-title=WAF and Azure Front Door PoC")
 
 #Login to Azure
 #az login
 
-az group create --name $rg_name --location $region1 --tags $tags #'delete'='yes'
+az group create --name $rg_name --location $region1 --tags $tags
 
 az appservice plan create --name "appserviceplaneastus2" --resource-group $rg_name --is-linux --location $region1 --tags $tags
 az appservice plan create --name "appserviceplanwestus" --resource-group $rg_name --is-linux --location $region2 --tags $tags
